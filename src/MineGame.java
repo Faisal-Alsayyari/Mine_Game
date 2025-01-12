@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
-
+ // hi
 public class MineGame {
 
     private static final int FIELD_HEIGHT = 10;
