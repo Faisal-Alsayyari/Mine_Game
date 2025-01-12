@@ -77,7 +77,7 @@ public class MineGame {
                 final int col = j;
                 square.addMouseListener(new java.awt.event.MouseAdapter() {
                     public void mouseClicked(java.awt.event.MouseEvent e) {
-                        handleSquareClick(row, col); // Call a method when clicked
+                        squareClickColor(row, col, "green"); // Call a method when clicked
                     }
                 });
 
@@ -119,12 +119,37 @@ public class MineGame {
         return true;
     }
 
-    public static void handleSquareClick(int x, int y) {
-        if (wasClicked[x][y]) {
-            field[x][y].setBackground(Color.gray);
-        } else {
-            field[x][y].setBackground(Color.LIGHT_GRAY);
-            wasClicked[x][y] = true;
+//    public static void handleSquareClick(int x, int y) {
+//        if (wasClicked[x][y]) {
+//            field[x][y].setBackground(Color.gray);
+//        } else {
+//            field[x][y].setBackground(Color.LIGHT_GRAY);
+//            wasClicked[x][y] = true;
+//        }
+//    }
+
+    public static void squareClickColor(int x, int y, String color) {
+
+        color = color.toUpperCase();
+
+        switch (color) {
+            case "RED":
+                field[x][y].setBackground(Color.red);
+                break;
+            case "GRAY":
+                field[x][y].setBackground(Color.gray);
+                break;
+            case "LIGHT_GRAY":
+                field[x][y].setBackground(Color.LIGHT_GRAY);
+                break;
+            case "GREEN":
+                field[x][y].setBackground(new Color(0x00AA00));
+                break;
+            case "YELLOW":
+                field[x][y].setBackground(Color.yellow);
+                break;
         }
+
     }
+
 }
