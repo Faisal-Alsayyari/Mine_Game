@@ -1,7 +1,9 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Random;
- // hi
+// hi
 public class MineGame {
 
     private static final int FIELD_HEIGHT = 10;
@@ -12,6 +14,9 @@ public class MineGame {
     private static JLabel[][] field = new JLabel[FIELD_HEIGHT][FIELD_WIDTH];
     private static boolean[][] wasClicked = new boolean[FIELD_HEIGHT][FIELD_WIDTH];
     private static boolean[][] hasBomb = new boolean[FIELD_HEIGHT][FIELD_WIDTH];
+    private static boolean[][] showNumberOfNeighboringBombs = new boolean[FIELD_HEIGHT][FIELD_WIDTH];
+
+    public static final Font numberFont = new Font("Comic Sans", 3, 18);
 
     private static Random r = new Random();
 
@@ -45,6 +50,8 @@ public class MineGame {
 
         setStartingPoint();
 
+        displayNumberOfBombs();
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.insets = new Insets(10, 10, 20, 10);
@@ -63,10 +70,14 @@ public class MineGame {
     }
 
     public static void initializeGrid() {
+
         for (int i = 0; i < FIELD_HEIGHT; i++) {
             for (int j = 0; j < FIELD_WIDTH; j++) {
 
+                // these two lines wipe the arrays so if it's regenerated then it's new and shit
                 wasClicked[i][j] = false;
+                hasBomb[i][j] = false;
+                showNumberOfNeighboringBombs[i][j] = false;
 
                 JLabel square = new JLabel(" ", SwingConstants.CENTER);
 
@@ -75,6 +86,7 @@ public class MineGame {
 
                 if (r.nextInt(5) == 0) {
                     square.setBackground(Color.red);
+                    hasBomb[i][j] = true;
                 } else {
                     square.setBackground(Color.gray);
                 }
@@ -86,9 +98,18 @@ public class MineGame {
                 // The below code was INSPIRED by our good friend Chat, who helped us use MouseListener for clicking on a JLabel square
                 final int row = i;
                 final int col = j;
-                square.addMouseListener(new java.awt.event.MouseAdapter() {
-                    public void mouseClicked(java.awt.event.MouseEvent e) {
-                        squareClickColor(row, col, "green"); // Call a method when clicked
+                square.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mouseClicked(MouseEvent e) {
+                        if (SwingUtilities.isLeftMouseButton(e)) {
+                            revealSquare(row, col);
+                            gridPanel.revalidate(); // Revalidate the panel to refresh the layout
+                            gridPanel.repaint();
+                        } else if (SwingUtilities.isRightMouseButton(e)) {
+                            placeFlag(row, col);
+                            gridPanel.revalidate(); // Revalidate the panel to refresh the layout
+                            gridPanel.repaint();
+                        }
                     }
                 });
 
@@ -100,14 +121,43 @@ public class MineGame {
         }
     }
 
+    public static void revealSquare(int x, int y) {
+
+        // first case: if the user clicked on a bomb
+        if (hasBomb[x][y]) {
+            System.out.println("dalalal");
+        }
+
+        squareClickColor(x, y, "light_gray");
+        showNumberOfNeighboringBombs[x][y] = true;
+        displayNumberOfBombs();
+    }
+
+    public static void placeFlag(int x, int y) {
+        squareClickColor(x, y, "blue");
+    }
+
     public static void restartGame() {
         gridPanel.removeAll();
         initializeGrid();
         gridPanel.revalidate(); // Revalidate the panel to refresh the layout
         gridPanel.repaint();
         setStartingPoint();
+        displayNumberOfBombs();
 
+    }
 
+    public static void displayNumberOfBombs() {
+        int neighboringBombs;
+        for (int i = 0; i < FIELD_HEIGHT; i++) {
+            for (int j = 0; j < FIELD_WIDTH; j++) {
+                if (showNumberOfNeighboringBombs[i][j] && (neighboringBombs = getNumberOfNeighboringBombs(i, j)) != 0) {
+
+                    field[i][j].setText(String.valueOf(neighboringBombs));
+                    field[i][j].setFont(numberFont);
+                }
+            }
+        }
     }
 
     public static boolean setStartingPoint() {
@@ -120,8 +170,6 @@ public class MineGame {
         int secondRandomLowNumber = r.nextInt(3);
         int firstRandomHighNumber = r.nextInt(7, 9);
         int secondRandomHighNumber = r.nextInt(7, 9);
-
-        System.out.println(scenario);
 
         switch (scenario) {
 
@@ -150,26 +198,85 @@ public class MineGame {
 
     public static void createStartSquare(int x, int y) {
         squareClickColor(x, y, "green");
-        squareClickColor(x + 1, y, "blue");
-        squareClickColor(x - 1, y, "blue");
-        squareClickColor(x, y + 1, "blue");
-        squareClickColor(x, y - 1, "blue");
 
+        if (checkIfCoordsAreInBounds(x + 1, y)) {
+            squareClickColor(x + 1, y, "light_gray");
+            hasBomb[x + 1][y] = false;
+            showNumberOfNeighboringBombs[x + 1][y] = true;
+        }
+
+        if (checkIfCoordsAreInBounds(x - 1, y)) {
+            squareClickColor(x - 1, y, "light_gray");
+            hasBomb[x - 1][y] = false;
+            showNumberOfNeighboringBombs[x - 1][y] = true;
+        }
+
+        if (checkIfCoordsAreInBounds(x, y + 1)) {
+            squareClickColor(x, y + 1, "light_gray");
+            hasBomb[x][y + 1] = false;
+            showNumberOfNeighboringBombs[x][y + 1] = true;
+        }
+
+        if (checkIfCoordsAreInBounds(x, y - 1)) {
+            squareClickColor(x, y - 1, "light_gray");
+            hasBomb[x][y - 1] = false;
+            showNumberOfNeighboringBombs[x][y - 1] = true;
+        }
     }
 
     public static void createEndSquare(int x, int y) {
         squareClickColor(x, y, "yellow");
-        squareClickColor(x + 1, y, "blue");
-        squareClickColor(x - 1, y, "blue");
-        squareClickColor(x, y + 1, "blue");
-        squareClickColor(x, y - 1, "blue");
+
+        if (checkIfCoordsAreInBounds(x + 1, y)) {
+            squareClickColor(x + 1, y, "light_gray");
+            hasBomb[x + 1][y] = false;
+            showNumberOfNeighboringBombs[x + 1][y] = true;
+        }
+
+        if (checkIfCoordsAreInBounds(x - 1, y)) {
+            squareClickColor(x - 1, y, "light_gray");
+            hasBomb[x - 1][y] = false;
+            showNumberOfNeighboringBombs[x - 1][y] = true;
+        }
+
+        if (checkIfCoordsAreInBounds(x, y + 1)) {
+            squareClickColor(x, y + 1, "light_gray");
+            hasBomb[x][y + 1] = false;
+            showNumberOfNeighboringBombs[x][y + 1] = true;
+        }
+
+        if (checkIfCoordsAreInBounds(x, y - 1)) {
+            squareClickColor(x, y - 1, "light_gray");
+            hasBomb[x][y - 1] = false;
+            showNumberOfNeighboringBombs[x][y - 1] = true;
+        }
+    }
+
+    public static boolean checkIfCoordsAreInBounds(int x, int y) {
+        return ((x >= 0) && (x <= 9) && (y >= 0) && (y <= 9));
+    }
+
+    public static int getNumberOfNeighboringBombs(int x, int y) {
+
+        // a square with a bomb doesn't neighbor any other bomb for game logic purposes.
+        if (hasBomb[x][y]) return 0;
+
+        int numberOfBombs = 0;
+        if (checkIfCoordsAreInBounds(x + 1, y) && hasBomb[x + 1][y]) numberOfBombs++;
+        if (checkIfCoordsAreInBounds(x - 1, y) && hasBomb[x - 1][y]) numberOfBombs++;
+        if (checkIfCoordsAreInBounds(x, y + 1) && hasBomb[x][y + 1]) numberOfBombs++;
+        if (checkIfCoordsAreInBounds(x, y - 1) && hasBomb[x][y - 1]) numberOfBombs++;
+
+        System.out.println(numberOfBombs);
+
+        return numberOfBombs;
     }
 
     public static void squareClickColor(int x, int y, String color) {
 
         try {
 
-            System.out.println("DEBUG: x: "  + x + " y: " + y);
+            // System.out.println("DEBUG: x: "  + x + " y: " + y);
 
             color = color.toUpperCase();
 
@@ -195,7 +302,7 @@ public class MineGame {
             }
 
         } catch (IndexOutOfBoundsException e) {
-            System.out.println("generated out of bounds square. x: " + x + " y: " + y);
+            System.out.println("DEBUG generated out of bounds square. x: " + x + " y: " + y);
         }
 
     }
