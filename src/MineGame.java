@@ -34,6 +34,8 @@ public class MineGame {
 
         initializeGrid();
 
+        setStartingPoint();
+
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.insets = new Insets(10, 10, 20, 10);
@@ -93,25 +95,33 @@ public class MineGame {
 
         // candidates for starting square must be between 0-2 and 8-10 on both x and y
 
-        boolean startingIsOnLeft = (r.nextInt(2) == 0);
+        int scenario = r.nextInt(4);
 
-        if (startingIsOnLeft) {
+        int firstRandomLowNumber = r.nextInt(3);
+        int secondRandomLowNumber = r.nextInt(3);
+        int firstRandomHighNumber = r.nextInt(7, 9);
+        int secondRandomHighNumber = r.nextInt(7, 9);
 
-            int testX = r.nextInt(3);
-            int testY = r.nextInt(11);
+        System.out.println(scenario);
 
-            if (hasBomb[testX][testY]) {
-                return false;
-            }
+        switch (scenario) {
 
-        } else {
-
-            int testX = r.nextInt(3);
-            int testY = r.nextInt(11);
-
-            if (hasBomb[testX][testY]) {
-                return false;
-            }
+            case 0: // starting square is top left
+                createStartSquare(firstRandomLowNumber, secondRandomLowNumber);
+                createEndSquare(firstRandomHighNumber, secondRandomHighNumber);
+                break;
+            case 1: // starting square is top right
+                createStartSquare(firstRandomLowNumber, firstRandomHighNumber);
+                createEndSquare(firstRandomHighNumber, secondRandomLowNumber);
+                break;
+            case 2: // starting square is bottom left
+                createStartSquare(firstRandomHighNumber, secondRandomLowNumber);
+                createEndSquare(secondRandomLowNumber, secondRandomHighNumber);
+                break;
+            case 3: // starting square is bottom right
+                createStartSquare(firstRandomHighNumber, secondRandomHighNumber);
+                createEndSquare(firstRandomLowNumber, secondRandomLowNumber);
+                break;
 
         }
 
@@ -119,35 +129,54 @@ public class MineGame {
         return true;
     }
 
-//    public static void handleSquareClick(int x, int y) {
-//        if (wasClicked[x][y]) {
-//            field[x][y].setBackground(Color.gray);
-//        } else {
-//            field[x][y].setBackground(Color.LIGHT_GRAY);
-//            wasClicked[x][y] = true;
-//        }
-//    }
+    public static void createStartSquare(int x, int y) {
+        squareClickColor(x, y, "green");
+        squareClickColor(x + 1, y, "blue");
+        squareClickColor(x - 1, y, "blue");
+        squareClickColor(x, y + 1, "blue");
+        squareClickColor(x, y - 1, "blue");
+
+    }
+
+    public static void createEndSquare(int x, int y) {
+        squareClickColor(x, y, "yellow");
+        squareClickColor(x + 1, y, "blue");
+        squareClickColor(x - 1, y, "blue");
+        squareClickColor(x, y + 1, "blue");
+        squareClickColor(x, y - 1, "blue");
+    }
 
     public static void squareClickColor(int x, int y, String color) {
 
-        color = color.toUpperCase();
+        try {
 
-        switch (color) {
-            case "RED":
-                field[x][y].setBackground(Color.red);
-                break;
-            case "GRAY":
-                field[x][y].setBackground(Color.gray);
-                break;
-            case "LIGHT_GRAY":
-                field[x][y].setBackground(Color.LIGHT_GRAY);
-                break;
-            case "GREEN":
-                field[x][y].setBackground(new Color(0x00AA00));
-                break;
-            case "YELLOW":
-                field[x][y].setBackground(Color.yellow);
-                break;
+            System.out.println("DEBUG: x: "  + x + " y: " + y);
+
+            color = color.toUpperCase();
+
+            switch (color) {
+                case "RED":
+                    field[x][y].setBackground(Color.red);
+                    break;
+                case "GRAY":
+                    field[x][y].setBackground(Color.gray);
+                    break;
+                case "LIGHT_GRAY":
+                    field[x][y].setBackground(Color.LIGHT_GRAY);
+                    break;
+                case "GREEN":
+                    field[x][y].setBackground(new Color(0x00AA00));
+                    break;
+                case "YELLOW":
+                    field[x][y].setBackground(Color.yellow);
+                    break;
+                case "BLUE":
+                    field[x][y].setBackground(Color.BLUE);
+                    break;
+            }
+
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("generated out of bounds square. x: " + x + " y: " + y);
         }
 
     }
