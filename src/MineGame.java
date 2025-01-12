@@ -26,6 +26,15 @@ public class MineGame {
         topPanel.setLayout(new BorderLayout());
         frame.add(topPanel, BorderLayout.NORTH); // add the topPanel to the top of the frame
 
+        JPanel bottomPanel = new JPanel(); // Use a simpler layout like FlowLayout
+        bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0,0)); // Center the button with padding
+        frame.add(bottomPanel, BorderLayout.SOUTH);
+
+        Button restartButton = new Button("Restart");
+        restartButton.setPreferredSize(new Dimension(100, 50)); // Set the size of the button explicitly
+        restartButton.addActionListener(e -> restartGame());
+        bottomPanel.add(restartButton); // Add the button to the bottom panel
+
         JPanel centerPanel = new JPanel(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints(); // gridbaglayout (gbc) is another layout used
 
@@ -89,6 +98,16 @@ public class MineGame {
 
             }
         }
+    }
+
+    public static void restartGame() {
+        gridPanel.removeAll();
+        initializeGrid();
+        gridPanel.revalidate(); // Revalidate the panel to refresh the layout
+        gridPanel.repaint();
+        setStartingPoint();
+
+
     }
 
     public static boolean setStartingPoint() {
