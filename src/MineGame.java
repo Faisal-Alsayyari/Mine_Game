@@ -24,6 +24,10 @@ public class MineGame {
         frame = new JFrame("Mine Game");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // set the exit button to close the program
         frame.setSize(800, 800); // set dimensions to 800 by 800 px
+        frame.setPreferredSize(new Dimension(800,800));
+
+        ImageIcon gameicon = new ImageIcon("src/gamelogoicon.png");
+        frame.setIconImage(gameicon.getImage());
 
         frame.setLayout(new BorderLayout()); // there are different layouts used -- BorderLayout is one of them
 
@@ -63,11 +67,11 @@ public class MineGame {
 
     }
 
-    public static void main(String[] args) {
-
-        new MineGame();
-
-    }
+//    public static void main(String[] args) {
+//
+//        new MineGame();
+//
+//    }
 
     public static void initializeGrid() {
 
