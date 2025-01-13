@@ -8,7 +8,14 @@ public class MineGame {
 
     private static final int FIELD_HEIGHT = 10;
     private static final int FIELD_WIDTH = 10;
+    public static int prevx = -1;
+    public static int prevy = -1;
+    public static int endx;
+    public static int endy;
+    public static int selx;
+    public static int sely;
 
+    public static JLabel topPanelLabel = new JLabel();
     private static JFrame frame;
     private static JPanel gridPanel;
     private static JLabel[][] field = new JLabel[FIELD_HEIGHT][FIELD_WIDTH];
@@ -34,6 +41,9 @@ public class MineGame {
         JPanel topPanel = new JPanel(); // initialize new JPanel object
         topPanel.setLayout(new BorderLayout());
         frame.add(topPanel, BorderLayout.NORTH); // add the topPanel to the top of the frame
+
+        topPanelLabel.setLayout(new BorderLayout());
+        topPanel.add(topPanelLabel, BorderLayout.CENTER);
 
         JPanel bottomPanel = new JPanel(); // Use a simpler layout like FlowLayout
         bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0,0)); // Center the button with padding
@@ -112,6 +122,9 @@ public class MineGame {
                             gridPanel.revalidate(); // Revalidate the panel to refresh the layout
                             gridPanel.repaint();
                             currentSelectedSquare(row, col);
+                            selx = row;
+                            sely = col;
+                            topPanelLabel.setText(String.valueOf(distanceFromObjective(selx,sely)));
                         } else if (SwingUtilities.isRightMouseButton(e)) {
                             placeFlag(row, col);
                             gridPanel.revalidate(); // Revalidate the panel to refresh the layout
@@ -257,6 +270,10 @@ public class MineGame {
             hasBomb[x][y - 1] = false;
             showNumberOfNeighboringBombs[x][y - 1] = true;
         }
+
+        endx = x;
+        endy = y;
+
     }
 
     public static boolean checkIfCoordsAreInBounds(int x, int y) {
@@ -318,9 +335,32 @@ public class MineGame {
     }
 
     public static void currentSelectedSquare(int x, int y) {
+
+        if (prevx != -1 && prevy != -1) {
+            squareClickColor(prevx, prevy, "light_gray");
+            System.out.println("Previous selected square: " + prevx + ", " + prevy);
+        }
+
         squareClickColor(x, y, "white");
         System.out.println("Current selected square: " + x + ", " + y);
+
+        prevx = x;
+        prevy = y;
     }
 
+    public static double distanceFromObjective(int x, int y) {
+
+        int subtx = Math.abs(x - endx);
+        int subty = Math.abs(y - endy);
+
+        int sqx = subtx*subtx;
+        int sqy = subty*subty;
+
+        int added = sqx + sqy;
+        double distance = Math.sqrt((double)added);
+        distance = Math.round(distance);
+
+        return distance;
+    }
 
 }
