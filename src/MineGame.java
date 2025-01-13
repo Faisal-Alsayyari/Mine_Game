@@ -219,7 +219,7 @@ public class MineGame {
 
     }
 
-    public static boolean setStartingPoint() {
+    public static void setStartingPoint() {
 
         // candidates for starting square must be between 0-2 and 8-10 on both x and y
 
@@ -252,7 +252,6 @@ public class MineGame {
         }
 
 
-        return true;
     }
 
     public static void createStartSquare(int x, int y) {
