@@ -14,6 +14,8 @@ public class MineGame {
     public static int endy;
     public static int selx;
     public static int sely;
+    public static int targetx;
+    public static int targety;
 
     public static JLabel topPanelLabel = new JLabel();
     private static JFrame frame;
@@ -135,6 +137,7 @@ public class MineGame {
                             selx = row;
                             sely = col;
                             topPanelLabel.setText(String.valueOf(distanceFromObjective(selx,sely)));
+                            onEndSquareClick(row, col);
                         } else if (SwingUtilities.isRightMouseButton(e)) {
                             placeFlag(row, col);
                             gridPanel.revalidate(); // Revalidate the panel to refresh the layout
@@ -278,6 +281,10 @@ public class MineGame {
             updateSquare(x, y - 1, getNumberOfNeighboringBombs(x, y - 1), "light_gray");
             hasBomb[x][y - 1] = false;
         }
+
+        endx = x;
+        endy = y;
+
     }
 
     public static void updateSquare(int x, int y, int num, String color) {
@@ -402,6 +409,15 @@ public class MineGame {
         distance = Math.round(distance);
 
         return distance;
+    }
+
+    public static void onEndSquareClick(int x, int y) {
+
+        if(x == endx && y == endy) {
+            System.out.println("Congratulations! You have no life!");
+            setSquareColor(x,y,"yellow");
+        }
+
     }
 
 }
