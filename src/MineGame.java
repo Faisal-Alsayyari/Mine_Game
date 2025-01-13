@@ -37,6 +37,8 @@ public class MineGame {
 
         JPanel bottomPanel = new JPanel(); // Use a simpler layout like FlowLayout
         bottomPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0,0)); // Center the button with padding
+        bottomPanel.setBorder(BorderFactory.createLineBorder(Color.BLACK)); // Add a border to the bottom panel
+        bottomPanel.setBackground(Color.LIGHT_GRAY); // Set the background color of the bottom panel
         frame.add(bottomPanel, BorderLayout.SOUTH);
 
         Button restartButton = new Button("Restart");
@@ -109,6 +111,7 @@ public class MineGame {
                             revealSquare(row, col);
                             gridPanel.revalidate(); // Revalidate the panel to refresh the layout
                             gridPanel.repaint();
+                            currentSelectedSquare(row, col);
                         } else if (SwingUtilities.isRightMouseButton(e)) {
                             placeFlag(row, col);
                             gridPanel.revalidate(); // Revalidate the panel to refresh the layout
@@ -303,6 +306,9 @@ public class MineGame {
                 case "BLUE":
                     field[x][y].setBackground(Color.BLUE);
                     break;
+                case "WHITE":
+                    field[x][y].setBackground(Color.WHITE);
+                    break;
             }
 
         } catch (IndexOutOfBoundsException e) {
@@ -310,5 +316,11 @@ public class MineGame {
         }
 
     }
+
+    public static void currentSelectedSquare(int x, int y) {
+        squareClickColor(x, y, "white");
+        System.out.println("Current selected square: " + x + ", " + y);
+    }
+
 
 }
