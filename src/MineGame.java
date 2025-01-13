@@ -133,7 +133,7 @@ public class MineGame {
                             }
                             gridPanel.revalidate(); // Revalidate the panel to refresh the layout
                             gridPanel.repaint();
-                            currentSelectedSquare(row, col);
+                            handleSelectedSquare(row, col);
                             selx = row;
                             sely = col;
                             topPanelLabel.setText(String.valueOf(distanceFromObjective(selx,sely)));
@@ -394,14 +394,14 @@ public class MineGame {
 
     }
 
-    public static void currentSelectedSquare(int x, int y) {
+    public static void handleSelectedSquare(int x, int y) {
 
         if (prevx != -1 && prevy != -1) {
-            squareClickColor(prevx, prevy, "light_gray");
+            setSquareColor(prevx, prevy, "light_gray");
             System.out.println("Previous selected square: " + prevx + ", " + prevy);
         }
 
-        squareClickColor(x, y, "white");
+        setSquareColor(x, y, "white");
         System.out.println("Current selected square: " + x + ", " + y);
 
         prevx = x;
