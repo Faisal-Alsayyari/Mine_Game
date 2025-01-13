@@ -129,11 +129,9 @@ public class MineGame {
                                     break;
                                 default:
                                     square.setText(String.valueOf(x));
-                                    setSquareColor(row, col, "light_gray");
                             }
                             gridPanel.revalidate(); // Revalidate the panel to refresh the layout
                             gridPanel.repaint();
-                            handleSelectedSquare(row, col);
                             selx = row;
                             sely = col;
                             topPanelLabel.setText(String.valueOf(distanceFromObjective(selx,sely)));
@@ -170,13 +168,13 @@ public class MineGame {
 
         // first case: if the user clicked on a bomb
         if (hasBomb[x][y]) {
-            setSquareColor(x, y, "gray");
+            setSquareColor(x, y, "red");
             return -1; // handle game failure
         }
 
         // now, reveal the number of squares
 
-        setSquareColor(x, y, "light_gray");
+        handleSelectedSquare(x, y);
 
         setSurroundingSquaresAsRevealable(x, y);
 
@@ -217,19 +215,6 @@ public class MineGame {
         setStartingPoint();
 
     }
-
-    /* public static void displayNumberOfBombs() {
-        int neighboringBombs;
-        for (int i = 0; i < FIELD_HEIGHT; i++) {
-            for (int j = 0; j < FIELD_WIDTH; j++) {
-                if (canClickOnSquare[i][j] && (neighboringBombs = getNumberOfNeighboringBombs(i, j)) != 0) {
-
-                    field[i][j].setText(String.valueOf(neighboringBombs));
-                    field[i][j].setFont(numberFont);
-                }
-            }
-        }
-    } */
 
     public static boolean setStartingPoint() {
 
@@ -277,25 +262,21 @@ public class MineGame {
         if (checkIfCoordsAreInBounds(x + 1, y)) {
             updateSquare(x + 1, y, getNumberOfNeighboringBombs(x + 1, y), "light_gray");
             hasBomb[x + 1][y] = false;
-            System.out.println("DEBUG 1");
         }
 
         if (checkIfCoordsAreInBounds(x - 1, y)) {
             updateSquare(x - 1, y, getNumberOfNeighboringBombs(x - 1, y), "light_gray");
             hasBomb[x - 1][y] = false;
-            System.out.println("DEBUG 2");
         }
 
         if (checkIfCoordsAreInBounds(x, y + 1)) {
             updateSquare(x, y + 1, getNumberOfNeighboringBombs(x, y + 1), "light_gray");
             hasBomb[x][y + 1] = false;
-            System.out.println("DEBUG 3");
         }
 
         if (checkIfCoordsAreInBounds(x, y - 1)) {
             updateSquare(x, y - 1, getNumberOfNeighboringBombs(x, y - 1), "light_gray");
             hasBomb[x][y - 1] = false;
-            System.out.println("DEBUG 4");
         }
     }
 
