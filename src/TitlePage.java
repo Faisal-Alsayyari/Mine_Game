@@ -34,5 +34,4 @@ public class TitlePage extends MineGame {
 
 
     }
-
 }
