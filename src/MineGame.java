@@ -6,16 +6,14 @@ import java.util.Random;
 // hi
 public class MineGame {
 
-    private static final int FIELD_HEIGHT = 10;
-    private static final int FIELD_WIDTH = 10;
+    public static final int FIELD_HEIGHT = 10;
+    public static final int FIELD_WIDTH = 10;
     public static int prevx = -1;
     public static int prevy = -1;
     public static int endx;
     public static int endy;
     public static int selx;
     public static int sely;
-    public static int targetx;
-    public static int targety;
 
     public static JLabel topPanelLabel = new JLabel();
     private static JFrame frame;
@@ -41,6 +39,7 @@ public class MineGame {
         frame.setLayout(new BorderLayout()); // there are different layouts used -- BorderLayout is one of them
 
         JPanel topPanel = new JPanel(); // initialize new JPanel object
+        topPanelLabel.setFont(numberFont);
         topPanel.setLayout(new BorderLayout());
         frame.add(topPanel, BorderLayout.NORTH); // add the topPanel to the top of the frame
 
@@ -87,6 +86,9 @@ public class MineGame {
 
     public static void initializeGrid() {
 
+        prevx = -1;
+        prevy = -1;
+
         for (int i = 0; i < FIELD_HEIGHT; i++) {
             for (int j = 0; j < FIELD_WIDTH; j++) {
 
@@ -96,6 +98,8 @@ public class MineGame {
                 canClickOnSquare[i][j] = false;
 
                 JLabel square = new JLabel(" ", SwingConstants.CENTER);
+
+                square.setFont(numberFont);
 
                 square.setBorder(BorderFactory.createLineBorder(Color.DARK_GRAY)); // border between squares
                 square.setOpaque(true);
@@ -131,6 +135,7 @@ public class MineGame {
                                     break;
                                 default:
                                     square.setText(String.valueOf(x));
+                                    square.setFont(numberFont);
                             }
                             gridPanel.revalidate(); // Revalidate the panel to refresh the layout
                             gridPanel.repaint();
